@@ -1,0 +1,38 @@
+--a  -  crear tabla
+DECLARE @Respuestas TABLE (
+	Id INT PRIMARY KEY IDENTITY (1,1), 
+	Tipo_Transporte INT NOT NULL, 
+	Distancia_Recorrida DECIMAL (18,2) NOT NULL, 
+	email NVARCHAR(60) NOT NULL DEFAULT 'NN',
+	origen NVARCHAR (60) NOT NULL DEFAULT'NN',
+	destino NVARCHAR (60) NOT NULL DEFAULT'NN'
+	)
+
+--b  -  insertar listado, respetar orden de argumentos
+-- Transporte 1 Bici / 2 Moto  / 3 Auto
+INSERT INTO @Respuestas (Tipo_Transporte,email,Distancia_Recorrida,origen,destino) 
+VALUES (1,'anibal@gmail.com',4,'corrientes 2200', 'almafuerte 1033'),
+(2,'marta@gmail.com',8.50,'artigas y gervacio mendez', 'almafuerte 1033'),
+(3,'cecilia@gmail.com',6.60,'las lechiguanas 50', 'almafuerte 1033'),
+(1,'guido.agustinb@gmail.com',7.90,'san lorenzo 290', 'almafuerte 1033')
+
+-- c  - cantidad
+SELECT COUNT (*) AS Total_Personas FROM @Respuestas   --COUNT =Cantidad
+
+-- d - cantidad por vehiculo
+SELECT Tipo_Transporte, --nose porque la coma
+COUNT (*) AS Cantidad_Personas FROM @Respuestas GROUP BY Tipo_Transporte
+
+-- e - promedio recorrido por opcion
+DECLARE @PromedioBici DECIMAL (18,2)=0
+SELECT @PromedioBici=AVG(Distancia_Recorrida) FROM @Respuestas WHERE Tipo_Transporte=1
+PRINT 'Promedio Bicicleta: ' + CONVERT (NVARCHAR(60),@PromedioBici)
+DECLARE @PromedioMoto DECIMAL (18,2)=0
+SELECT @PromedioMoto=AVG(Distancia_Recorrida) FROM @Respuestas WHERE Tipo_Transporte=2
+PRINT 'Promedio Motocicleta: ' + CONVERT (NVARCHAR (60),@PromedioMoto)
+DECLARE @PromedioAuto DECIMAL (18,2)=0
+SELECT @PromedioAuto=AVG(Distancia_Recorrida) FROM @Respuestas WHERE Tipo_Transporte=3
+PRINT 'Promedio Automovil: ' + CONVERT (NVARCHAR (60),@PromedioAuto)
+DECLARE @PromedioPublico DECIMAL (18,2)=0
+SELECT @PromedioPublico=AVG(Distancia_Recorrida) FROM @Respuestas WHERE Tipo_Transporte=4
+PRINT 'Promedio Transporte Público: ' + CONVERT (NVARCHAR (60),@PromedioPublico)

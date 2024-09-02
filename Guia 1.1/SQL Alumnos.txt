@@ -1,0 +1,50 @@
+--a  -  crear tabla
+DECLARE @Alumnos TABLE (
+	Id INT PRIMARY KEY IDENTITY (1,1), --de uno en uno
+	LU INT NOT NULL, --no puede ser nulo
+	Nombre NVARCHAR(60) NOT NULL, --es bits no caracteres
+	Nota DECIMAL  (18,2) --precision de 2 digitos despues de la coma
+	)
+
+--b  -  insertar listado, respetar orden de argumentos
+INSERT INTO @Alumnos (LU, Nombre, Nota) --Id no va al ser autoincremental
+VALUES (2342,'Anibal',45),
+(2343,'Camila',85.50),
+(2333,'Cecilia',60.60),
+(2337,'Nelson',75.70),
+(2589,'José',85.90),
+(2902,'Jose Manuel',85.20)
+
+-- c  - promedio
+DECLARE @Promedio DECIMAL(18,2)=0 --promedio tipo decimal, inicio en  0
+SELECT @Promedio=AVG(Nota) FROM @Alumnos --saca  promedio y lo setea en promedio
+PRINT  'Promedio' + CONVERT (NVARCHAR(60),@Promedio) --pasa promedio a string
+--filtrar notas mayores a promedio
+SELECT * FROM @Alumnos WHERE  Nota>=@Promedio  ORDER BY LU DESC 
+--ordena segun LU de mayor a menor, porque printea?
+--  * todas las columnas de
+--otra forma de filtrar
+--SELECT * FROM @Alumnos WHERE NOTA >= (SELECT AVG(Nota) FROM @Alumnos)
+--no se declara @Promedio, pero se debe hacer el calculo cada vez
+
+-- d  - listar alumnos  de nombre  x
+--DECLARE @Expresion NVARCHAR(50) ='%jose%'; --palabra a buscar
+--SELECT * FROM @Alumnos WHERE Nombre=@Expresion
+
+--ignorando las mayusculas/minusculas
+--DECLARE @Expresion NVARCHAR(50) ='%jose%';
+--SELECT * FROM @Alumnos WHERE UPPER(Nombre)=UPPER(@Expresion)
+--pasa todo a mayusculas para que no haya diferencias a la hora de comparar
+
+-- ignorando mayusculas/minusculas - 
+DECLARE @Expresion NVARCHAR(50) ='%jose%';
+SELECT * FROM @Alumnos WHERE Nombre COLLATE Latin1_General_CI_AI LIKE @Expresion;
+--Todas las filas de @Alumnos de la columna Nombre
+--COLLATE=collation / Ci = Case Insensitive / Ai = Ancent Insensitive
+
+-- e  - Mayor y menor nota mejor al promedio 
+
+SELECT TOP 1 * FROM @Alumnos WHERE  Nota>=@Promedio  ORDER BY Nota DESC
+--seleccionar el top 1 de las notas que superen el promedio en orden desc
+SELECT TOP 1 * FROM @Alumnos WHERE  Nota>=@Promedio ORDER BY Nota ASC
+--seleccionar el top 1 de las notas que superen el promedio en orden asc
